@@ -100,7 +100,7 @@ spec:
       args:
         - version
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:d191460501a98ee9f46b5c5921d35f331ba0d1f09c657400ad185959246d2367
       command: [ec]
       args:
         - validate
