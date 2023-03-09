@@ -7,6 +7,7 @@
   "schedule": ["before 10pm"],
   "tekton": {
     "fileMatch": ["\\.yaml$", "\\.yml$"],
-    "pinDigests": true
+    "pinDigests": true,
+    "automerge": true
   }
 }
