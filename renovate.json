@@ -5,9 +5,12 @@
   ],
   "timezone": "America/New_York",
   "schedule": ["before 10pm"],
+  "automerge": true,
+  "automergeType": "pr",
+  "platformAutomerge": true,
+  "ignoreTests": true,
   "tekton": {
     "fileMatch": ["\\.yaml$", "\\.yml$"],
-    "pinDigests": true,
-    "automerge": true
+    "pinDigests": true
   }
 }
