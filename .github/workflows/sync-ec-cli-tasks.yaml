@@ -30,3 +30,5 @@ jobs:
     - name: Sync tasks
       run: ./hack/sync-ec-cli-tasks.sh ../ec-cli
       working-directory: tekton-catalog
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
