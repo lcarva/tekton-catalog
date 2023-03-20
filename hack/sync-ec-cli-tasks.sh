@@ -49,6 +49,15 @@ if [[ -z "${diff}" ]]; then
 fi
 echo "${diff}"
 
+if [ -n "${GITHUB_ACTIONS:-}" ]; then
+  git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+  git config --global user.name "${GITHUB_ACTOR}"
+  mkdir -p "${HOME}/.ssh"
+  echo "${DEPLOY_KEY}" > "${HOME}/.ssh/id_ed25519"
+  chmod 600 "${HOME}/.ssh/id_ed25519"
+  trap 'rm -rf "${HOME}/.ssh/id_rsa"' EXIT
+fi
+
 git add tasks
 git commit -m "sync ec-cli task definitions"
 git push
