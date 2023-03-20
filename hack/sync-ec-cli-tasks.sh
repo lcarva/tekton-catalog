@@ -34,7 +34,7 @@ images="$(grep -r -h -o -w 'quay.io/hacbs-contract/ec-cli:.*' | grep -v '@' | so
 
 for image in $images; do
     echo "Resolving image $image"
-    digest="$(skopeo inspect --no-tags "docker://${image}" | jq '.Digest' -r )"
+    digest="$(skopeo manifest-digest <(skopeo inspect --raw "docker://${image}"))"
     pinned_image="${image}@${digest}"
     echo "↳ ${pinned_image}"
     find . -type f -exec sed -i "s!${image}!${pinned_image}!g" {} +
