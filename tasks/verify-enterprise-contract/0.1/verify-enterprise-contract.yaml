@@ -100,12 +100,12 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:a3db17db4e0c4581d5deea53479e7aeb8e090717f9548bf1e472dc1ad19be2d9
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:88c23840fd8d58d21b5fac3a48facdc3fb15d76e8e24eea9b57c7eb1c61b915d
       command: [ec]
       args:
         - version
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:a3db17db4e0c4581d5deea53479e7aeb8e090717f9548bf1e472dc1ad19be2d9
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:88c23840fd8d58d21b5fac3a48facdc3fb15d76e8e24eea9b57c7eb1c61b915d
       command: [ec]
       args:
         - validate
