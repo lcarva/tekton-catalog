@@ -16,14 +16,14 @@ jobs:
     - name: Checkout tekton-catalog
       uses: actions/checkout@v3
       with:
-        repository: hacbs-contract/tekton-catalog
+        repository: enterprise-contract/tekton-catalog
         ref: main
         path: tekton-catalog
 
     - name: Checkout ec-cli
       uses: actions/checkout@v3
       with:
-        repository: hacbs-contract/ec-cli
+        repository: enterprise-contract/ec-cli
         ref: main
         path: ec-cli
 

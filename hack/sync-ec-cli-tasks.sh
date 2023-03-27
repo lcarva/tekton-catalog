@@ -16,7 +16,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 # Use this script to sync the task definitions with the task definitions
-# found in the hacbs-contract/ec-cli repository.
+# found in the enterprise-contract/ec-cli repository.
 # Usage:
 #   sync-ec-cli-tasks.sh <PATH_TO_EC_CLI_REPO>
 
