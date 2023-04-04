@@ -100,16 +100,17 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:d737adbd017451be3d51eebe893d435d87fd01390234ec0364b4ff7e5e8d0711
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b602fa825ff0d96d52e051ddd44475781b3e620f86fe5df55e38144764656d4e
       command: [ec]
       args:
         - version
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:d737adbd017451be3d51eebe893d435d87fd01390234ec0364b4ff7e5e8d0711
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b602fa825ff0d96d52e051ddd44475781b3e620f86fe5df55e38144764656d4e
       command: [ec]
       args:
         - validate
         - image
+        - "--verbose"
         - "--json-input"
         - "$(params.IMAGES)"
         - "--policy"
@@ -120,9 +121,9 @@ spec:
         - "$(params.REKOR_HOST)"
         # NOTE: The syntax below is required to negate boolean parameters
         - "--info=$(params.INFO)"
-        - "--strict=$(params.STRICT)"
+        - "--strict=false"
         - "--output"
-        - "yaml"
+        - "yaml=$(params.HOMEDIR)/report.yaml"
         - "--output"
         - "hacbs=$(results.HACBS_TEST_OUTPUT.path)"
       env:
@@ -135,3 +136,25 @@ spec:
           # value expected by Tekton Pipelines. NOTE: If params.SSL_CERT_DIR is empty, the value
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
+    - name: report
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b602fa825ff0d96d52e051ddd44475781b3e620f86fe5df55e38144764656d4e
+      command: [cat]
+      args:
+        - "$(params.HOMEDIR)/report.yaml"
+    - name: summary
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b602fa825ff0d96d52e051ddd44475781b3e620f86fe5df55e38144764656d4e
+      command: [jq]
+      args:
+        - "."
+        - "$(results.HACBS_TEST_OUTPUT.path)"
+    - name: assert
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b602fa825ff0d96d52e051ddd44475781b3e620f86fe5df55e38144764656d4e
+      command: [jq]
+      args:
+        - "--argjson"
+        - "strict"
+        - "$(params.STRICT)"
+        - "-e"
+        - >
+          .result == "SUCCESS" or .result == "WARNING" or ($strict | not)
+        - "$(results.HACBS_TEST_OUTPUT.path)"
