@@ -89,6 +89,11 @@ spec:
       description: Value for the HOME environment variable.
       default: /tekton/home
 
+    - name: EFFECTIVE_TIME
+      type: string
+      description: Run policy checks with the provided time.
+      default: "now"
+
   results:
     - name: HACBS_TEST_OUTPUT
       description: Short summary of the policy evaluation for each image
@@ -100,12 +105,12 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:7ce194f30a683b7f5fed1512b19a5d8ff8d64711be23cd6e02c12616b81ffa7f
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:6e3a025ae02e1c4825aec944361a959dafbb3f633844924ac91fe13f4ad3da73
       command: [ec]
       args:
         - version
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:7ce194f30a683b7f5fed1512b19a5d8ff8d64711be23cd6e02c12616b81ffa7f
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:6e3a025ae02e1c4825aec944361a959dafbb3f633844924ac91fe13f4ad3da73
       command: [ec]
       args:
         - validate
@@ -122,6 +127,7 @@ spec:
         # NOTE: The syntax below is required to negate boolean parameters
         - "--info=$(params.INFO)"
         - "--strict=false"
+        - "--effective-time=$(params.EFFECTIVE_TIME)"
         - "--output"
         - "yaml=$(params.HOMEDIR)/report.yaml"
         - "--output"
@@ -137,18 +143,18 @@ spec:
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
     - name: report
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:7ce194f30a683b7f5fed1512b19a5d8ff8d64711be23cd6e02c12616b81ffa7f
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:6e3a025ae02e1c4825aec944361a959dafbb3f633844924ac91fe13f4ad3da73
       command: [cat]
       args:
         - "$(params.HOMEDIR)/report.yaml"
     - name: summary
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:7ce194f30a683b7f5fed1512b19a5d8ff8d64711be23cd6e02c12616b81ffa7f
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:6e3a025ae02e1c4825aec944361a959dafbb3f633844924ac91fe13f4ad3da73
       command: [jq]
       args:
         - "."
         - "$(results.HACBS_TEST_OUTPUT.path)"
     - name: assert
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:7ce194f30a683b7f5fed1512b19a5d8ff8d64711be23cd6e02c12616b81ffa7f
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:6e3a025ae02e1c4825aec944361a959dafbb3f633844924ac91fe13f4ad3da73
       command: [jq]
       args:
         - "--argjson"
