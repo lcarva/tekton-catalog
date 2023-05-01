@@ -96,6 +96,9 @@ spec:
 
   results:
     - name: HACBS_TEST_OUTPUT
+      description: Short summary of the policy evaluation for each image (Deprecated)
+
+    - name: TEST_OUTPUT
       description: Short summary of the policy evaluation for each image
 
   stepTemplate:
@@ -105,12 +108,12 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:d6caf55e38b233fd0f24d3abc8c0e4c0b7e469307b6df6bcf11e7f5b1e4ad775
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:04458290275a3f6be68e7893a7d37df4a3f6fb672dd0c05f87892d27d8fa3f53
       command: [ec]
       args:
         - version
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:d6caf55e38b233fd0f24d3abc8c0e4c0b7e469307b6df6bcf11e7f5b1e4ad775
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:04458290275a3f6be68e7893a7d37df4a3f6fb672dd0c05f87892d27d8fa3f53
       command: [ec]
       args:
         - validate
@@ -130,6 +133,10 @@ spec:
         - "--effective-time=$(params.EFFECTIVE_TIME)"
         - "--output"
         - "yaml=$(params.HOMEDIR)/report.yaml"
+        # Write to both the new and the old deprecated result
+        # HACBS_TEST_OUTPUT will be removed in the future
+        - "--output"
+        - "hacbs=$(results.TEST_OUTPUT.path)"
         - "--output"
         - "hacbs=$(results.HACBS_TEST_OUTPUT.path)"
       env:
@@ -143,18 +150,18 @@ spec:
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
     - name: report
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:d6caf55e38b233fd0f24d3abc8c0e4c0b7e469307b6df6bcf11e7f5b1e4ad775
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:04458290275a3f6be68e7893a7d37df4a3f6fb672dd0c05f87892d27d8fa3f53
       command: [cat]
       args:
         - "$(params.HOMEDIR)/report.yaml"
     - name: summary
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:d6caf55e38b233fd0f24d3abc8c0e4c0b7e469307b6df6bcf11e7f5b1e4ad775
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:04458290275a3f6be68e7893a7d37df4a3f6fb672dd0c05f87892d27d8fa3f53
       command: [jq]
       args:
         - "."
-        - "$(results.HACBS_TEST_OUTPUT.path)"
+        - "$(results.TEST_OUTPUT.path)"
     - name: assert
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:d6caf55e38b233fd0f24d3abc8c0e4c0b7e469307b6df6bcf11e7f5b1e4ad775
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:04458290275a3f6be68e7893a7d37df4a3f6fb672dd0c05f87892d27d8fa3f53
       command: [jq]
       args:
         - "--argjson"
