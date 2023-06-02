@@ -108,12 +108,12 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:016a3d44438ddd835d594950e22a51e46c1a92c7a40c28aee6521872da93b3f0
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
       command: [ec]
       args:
         - version
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:016a3d44438ddd835d594950e22a51e46c1a92c7a40c28aee6521872da93b3f0
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
       command: [ec]
       args:
         - validate
@@ -150,18 +150,18 @@ spec:
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
     - name: report
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:016a3d44438ddd835d594950e22a51e46c1a92c7a40c28aee6521872da93b3f0
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
       command: [cat]
       args:
         - "$(params.HOMEDIR)/report.yaml"
     - name: summary
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:016a3d44438ddd835d594950e22a51e46c1a92c7a40c28aee6521872da93b3f0
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
       command: [jq]
       args:
         - "."
         - "$(results.TEST_OUTPUT.path)"
     - name: assert
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:016a3d44438ddd835d594950e22a51e46c1a92c7a40c28aee6521872da93b3f0
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
       command: [jq]
       args:
         - "--argjson"
