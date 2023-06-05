@@ -95,9 +95,6 @@ spec:
       default: "now"
 
   results:
-    - name: HACBS_TEST_OUTPUT
-      description: Short summary of the policy evaluation for each image (Deprecated)
-
     - name: TEST_OUTPUT
       description: Short summary of the policy evaluation for each image
 
@@ -108,12 +105,12 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
       command: [ec]
       args:
         - version
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
       command: [ec]
       args:
         - validate
@@ -133,12 +130,8 @@ spec:
         - "--effective-time=$(params.EFFECTIVE_TIME)"
         - "--output"
         - "yaml=$(params.HOMEDIR)/report.yaml"
-        # Write to both the new and the old deprecated result
-        # HACBS_TEST_OUTPUT will be removed in the future
         - "--output"
-        - "hacbs=$(results.TEST_OUTPUT.path)"
-        - "--output"
-        - "hacbs=$(results.HACBS_TEST_OUTPUT.path)"
+        - "appstudio=$(results.TEST_OUTPUT.path)"
       env:
         - name: SSL_CERT_DIR
           # The Tekton Operator automatically sets the SSL_CERT_DIR env to the value below but,
@@ -150,18 +143,18 @@ spec:
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
     - name: report
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
       command: [cat]
       args:
         - "$(params.HOMEDIR)/report.yaml"
     - name: summary
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
       command: [jq]
       args:
         - "."
         - "$(results.TEST_OUTPUT.path)"
     - name: assert
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:3db12e75faee6d2113b559a57004f2c46dcb985612af1492df05d707549fd08d
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
       command: [jq]
       args:
         - "--argjson"
@@ -170,4 +163,4 @@ spec:
         - "-e"
         - >
           .result == "SUCCESS" or .result == "WARNING" or ($strict | not)
-        - "$(results.HACBS_TEST_OUTPUT.path)"
+        - "$(results.TEST_OUTPUT.path)"
