@@ -63,6 +63,11 @@ spec:
       description: Rekor host for transparency log lookups
       default: ""
 
+    - name: TUF_MIRROR
+      type: string
+      description: TUF mirror URL. Provide a value when NOT using public sigstore deployment.
+      default: ""
+
     - name: SSL_CERT_DIR
       type: string
       description: |
@@ -105,12 +110,28 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:ad277dfaab0d3e214bb1a335ba027ef1c0c2806caec99ce6b4a91a8fb3105aa8
       command: [ec]
       args:
         - version
+    - name: initialize-tuf
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:ad277dfaab0d3e214bb1a335ba027ef1c0c2806caec99ce6b4a91a8fb3105aa8
+      script: |-
+        set -euo pipefail
+
+        if [[ -z "${TUF_MIRROR:-}" ]]; then
+            echo 'TUF_MIRROR not set. Skipping TUF root initialization.'
+            exit
+        fi
+
+        echo 'Initializing TUF root...'
+        cosign initialize --mirror "${TUF_MIRROR}" --root "${TUF_MIRROR}/root.json"
+        echo 'Done!'
+      env:
+        - name: TUF_MIRROR
+          value: "$(params.TUF_MIRROR)"
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:ad277dfaab0d3e214bb1a335ba027ef1c0c2806caec99ce6b4a91a8fb3105aa8
       command: [ec]
       args:
         - validate
@@ -143,18 +164,18 @@ spec:
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
     - name: report
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:ad277dfaab0d3e214bb1a335ba027ef1c0c2806caec99ce6b4a91a8fb3105aa8
       command: [cat]
       args:
         - "$(params.HOMEDIR)/report.yaml"
     - name: summary
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:ad277dfaab0d3e214bb1a335ba027ef1c0c2806caec99ce6b4a91a8fb3105aa8
       command: [jq]
       args:
         - "."
         - "$(results.TEST_OUTPUT.path)"
     - name: assert
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:4d3c22994854b0436449e6a8c96a9df0b31fcd0437494eb135e7aac3b41e05b7
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:ad277dfaab0d3e214bb1a335ba027ef1c0c2806caec99ce6b4a91a8fb3105aa8
       command: [jq]
       args:
         - "--argjson"
