@@ -13,6 +13,8 @@ permissions:
 jobs:
   sync-ec-cli-tasks:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
 
@@ -40,5 +42,3 @@ jobs:
       working-directory: tekton-catalog
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-      permissions:
-        contents: write
