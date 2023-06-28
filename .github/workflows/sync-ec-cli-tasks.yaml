@@ -8,7 +8,7 @@ on:
     - cron: '0 9 * * 1-5'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   sync-ec-cli-tasks:
@@ -40,3 +40,5 @@ jobs:
       working-directory: tekton-catalog
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+      permissions:
+        contents: write
