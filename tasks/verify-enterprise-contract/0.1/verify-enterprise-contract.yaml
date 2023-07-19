@@ -99,6 +99,11 @@ spec:
       description: Run policy checks with the provided time.
       default: "now"
 
+  workspaces:
+    - name: data
+      description: The workspace where the snapshot spec json file resides
+      optional: true
+
   results:
     - name: TEST_OUTPUT
       description: Short summary of the policy evaluation for each image
@@ -110,12 +115,12 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:0809e5e0f051bfe25af80a398ffb376cd53ab5662ba7877359e5f4d46f5ab864
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:8d23a367400821d10d6a6ed7e0b8c0cee225d2b440a4af54fdea47b923256b62
       command: [ec]
       args:
         - version
     - name: initialize-tuf
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:0809e5e0f051bfe25af80a398ffb376cd53ab5662ba7877359e5f4d46f5ab864
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:8d23a367400821d10d6a6ed7e0b8c0cee225d2b440a4af54fdea47b923256b62
       script: |-
         set -euo pipefail
 
@@ -131,13 +136,13 @@ spec:
         - name: TUF_MIRROR
           value: "$(params.TUF_MIRROR)"
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:0809e5e0f051bfe25af80a398ffb376cd53ab5662ba7877359e5f4d46f5ab864
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:8d23a367400821d10d6a6ed7e0b8c0cee225d2b440a4af54fdea47b923256b62
       command: [ec]
       args:
         - validate
         - image
         - "--verbose"
-        - "--json-input"
+        - "--images"
         - "$(params.IMAGES)"
         - "--policy"
         - "$(params.POLICY_CONFIGURATION)"
@@ -167,23 +172,23 @@ spec:
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
     - name: report
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:0809e5e0f051bfe25af80a398ffb376cd53ab5662ba7877359e5f4d46f5ab864
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:8d23a367400821d10d6a6ed7e0b8c0cee225d2b440a4af54fdea47b923256b62
       command: [cat]
       args:
         - "$(params.HOMEDIR)/report.yaml"
     - name: data
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:0809e5e0f051bfe25af80a398ffb376cd53ab5662ba7877359e5f4d46f5ab864
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:8d23a367400821d10d6a6ed7e0b8c0cee225d2b440a4af54fdea47b923256b62
       command: [cat]
       args:
         - "$(params.HOMEDIR)/data.yaml"
     - name: summary
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:0809e5e0f051bfe25af80a398ffb376cd53ab5662ba7877359e5f4d46f5ab864
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:8d23a367400821d10d6a6ed7e0b8c0cee225d2b440a4af54fdea47b923256b62
       command: [jq]
       args:
         - "."
         - "$(results.TEST_OUTPUT.path)"
     - name: assert
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:0809e5e0f051bfe25af80a398ffb376cd53ab5662ba7877359e5f4d46f5ab864
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:8d23a367400821d10d6a6ed7e0b8c0cee225d2b440a4af54fdea47b923256b62
       command: [jq]
       args:
         - "--argjson"
