@@ -1,4 +1,4 @@
-# Copyright 2022 Red Hat, Inc.
+# Copyright The Enterprise Contract Contributors
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -161,6 +161,8 @@ spec:
         - "appstudio=$(results.TEST_OUTPUT.path)"
         - "--output"
         - "data=$(params.HOMEDIR)/data.yaml"
+        - "--output"
+        - "attestation=$(params.HOMEDIR)/attestations.jsonl"
       env:
         - name: SSL_CERT_DIR
           # The Tekton Operator automatically sets the SSL_CERT_DIR env to the value below but,
@@ -181,6 +183,11 @@ spec:
       command: [cat]
       args:
         - "$(params.HOMEDIR)/data.yaml"
+    - name: attestations
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:308b3e1e07b0fe80351920f9c7ae4525c977250d7807257497c5877283dc509c
+      command: [cat]
+      args:
+        - "$(params.HOMEDIR)/attestations.jsonl"
     - name: summary
       image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:308b3e1e07b0fe80351920f9c7ae4525c977250d7807257497c5877283dc509c
       command: [jq]
