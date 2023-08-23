@@ -123,12 +123,12 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b1cd30866f64dd3b55966fcc4887afd088d9cb0317796c3c8136d5115da8faf8
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:56cc3f6abd8f2203cb49c92164fe6eb097bf3de4214c6f51fc77f35e6a6a3fa5
       command: [ec]
       args:
         - version
     - name: initialize-tuf
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b1cd30866f64dd3b55966fcc4887afd088d9cb0317796c3c8136d5115da8faf8
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:56cc3f6abd8f2203cb49c92164fe6eb097bf3de4214c6f51fc77f35e6a6a3fa5
       script: |-
         set -euo pipefail
 
@@ -144,7 +144,7 @@ spec:
         - name: TUF_MIRROR
           value: "$(params.TUF_MIRROR)"
     - name: validate
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b1cd30866f64dd3b55966fcc4887afd088d9cb0317796c3c8136d5115da8faf8
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:56cc3f6abd8f2203cb49c92164fe6eb097bf3de4214c6f51fc77f35e6a6a3fa5
       command: [ec]
       args:
         - validate
@@ -183,28 +183,28 @@ spec:
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
     - name: report
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b1cd30866f64dd3b55966fcc4887afd088d9cb0317796c3c8136d5115da8faf8
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:56cc3f6abd8f2203cb49c92164fe6eb097bf3de4214c6f51fc77f35e6a6a3fa5
       command: [cat]
       args:
         - "$(params.HOMEDIR)/report.yaml"
     - name: data
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b1cd30866f64dd3b55966fcc4887afd088d9cb0317796c3c8136d5115da8faf8
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:56cc3f6abd8f2203cb49c92164fe6eb097bf3de4214c6f51fc77f35e6a6a3fa5
       command: [cat]
       args:
         - "$(params.HOMEDIR)/data.yaml"
     - name: attestations
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b1cd30866f64dd3b55966fcc4887afd088d9cb0317796c3c8136d5115da8faf8
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:56cc3f6abd8f2203cb49c92164fe6eb097bf3de4214c6f51fc77f35e6a6a3fa5
       command: [cat]
       args:
         - "$(params.HOMEDIR)/attestations.jsonl"
     - name: summary
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b1cd30866f64dd3b55966fcc4887afd088d9cb0317796c3c8136d5115da8faf8
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:56cc3f6abd8f2203cb49c92164fe6eb097bf3de4214c6f51fc77f35e6a6a3fa5
       command: [jq]
       args:
         - "."
         - "$(results.TEST_OUTPUT.path)"
     - name: assert
-      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:b1cd30866f64dd3b55966fcc4887afd088d9cb0317796c3c8136d5115da8faf8
+      image: quay.io/hacbs-contract/ec-cli:snapshot@sha256:56cc3f6abd8f2203cb49c92164fe6eb097bf3de4214c6f51fc77f35e6a6a3fa5
       command: [jq]
       args:
         - "--argjson"
