@@ -66,10 +66,8 @@ spec:
     - name: IGNORE_REKOR
       type: string
       description: >-
-        Skip Rekor transparency log checks during validation. NOTE: The default value will change to
-        "false" in the near future as that is a more secure default value. It is currently "true" to
-        retain temporary backwards compatibility.
-      default: "true"
+        Skip Rekor transparency log checks during validation.
+      default: "false"
 
     - name: TUF_MIRROR
       type: string
@@ -123,12 +121,12 @@ spec:
 
   steps:
     - name: version
-      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:2c487700a8e511b3a0ebb90cfe250bd5755375409dfb4c8d1772a1b57baebd41
+      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:58d0764f04f788931db54403fd369aee50ae1a31221ec76fe1aea331eb4b4eea
       command: [ec]
       args:
         - version
     - name: initialize-tuf
-      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:2c487700a8e511b3a0ebb90cfe250bd5755375409dfb4c8d1772a1b57baebd41
+      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:58d0764f04f788931db54403fd369aee50ae1a31221ec76fe1aea331eb4b4eea
       script: |-
         set -euo pipefail
 
@@ -144,7 +142,7 @@ spec:
         - name: TUF_MIRROR
           value: "$(params.TUF_MIRROR)"
     - name: validate
-      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:2c487700a8e511b3a0ebb90cfe250bd5755375409dfb4c8d1772a1b57baebd41
+      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:58d0764f04f788931db54403fd369aee50ae1a31221ec76fe1aea331eb4b4eea
       command: [ec]
       args:
         - validate
@@ -183,28 +181,28 @@ spec:
           # will contain a trailing ":" - this is ok.
           value: "/tekton-custom-certs:/etc/ssl/certs:/etc/pki/tls/certs:/system/etc/security/cacerts:$(params.SSL_CERT_DIR)"
     - name: report
-      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:2c487700a8e511b3a0ebb90cfe250bd5755375409dfb4c8d1772a1b57baebd41
+      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:58d0764f04f788931db54403fd369aee50ae1a31221ec76fe1aea331eb4b4eea
       command: [cat]
       args:
         - "$(params.HOMEDIR)/report.yaml"
     - name: data
-      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:2c487700a8e511b3a0ebb90cfe250bd5755375409dfb4c8d1772a1b57baebd41
+      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:58d0764f04f788931db54403fd369aee50ae1a31221ec76fe1aea331eb4b4eea
       command: [cat]
       args:
         - "$(params.HOMEDIR)/data.yaml"
     - name: attestations
-      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:2c487700a8e511b3a0ebb90cfe250bd5755375409dfb4c8d1772a1b57baebd41
+      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:58d0764f04f788931db54403fd369aee50ae1a31221ec76fe1aea331eb4b4eea
       command: [cat]
       args:
         - "$(params.HOMEDIR)/attestations.jsonl"
     - name: summary
-      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:2c487700a8e511b3a0ebb90cfe250bd5755375409dfb4c8d1772a1b57baebd41
+      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:58d0764f04f788931db54403fd369aee50ae1a31221ec76fe1aea331eb4b4eea
       command: [jq]
       args:
         - "."
         - "$(results.TEST_OUTPUT.path)"
     - name: assert
-      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:2c487700a8e511b3a0ebb90cfe250bd5755375409dfb4c8d1772a1b57baebd41
+      image: quay.io/enterprise-contract/ec-cli:snapshot@sha256:58d0764f04f788931db54403fd369aee50ae1a31221ec76fe1aea331eb4b4eea
       command: [jq]
       args:
         - "--argjson"
